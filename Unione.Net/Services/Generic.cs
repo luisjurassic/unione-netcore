@@ -28,14 +28,14 @@ public class Generic
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Generic:CustomRequest");
 
-        var apiResponse = await _apiConnection.SendMessageAsync(request, obj);
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync(request, obj);
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = operationResultCreator(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<T>? result = operationResultCreator(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Generic:CustomRequest:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<T>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<T>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Generic:CustomRequest:END");
@@ -44,13 +44,15 @@ public class Generic
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Generic:CustomRequest:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

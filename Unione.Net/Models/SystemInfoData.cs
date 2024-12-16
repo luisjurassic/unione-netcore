@@ -55,7 +55,7 @@ public class SystemInfoData
 
     public static SystemInfoData CreateNew(string status, int userId, string email, string projectId, string projectName, DateTime period_start, DateTime period_end, int emails_included, int email_sent)
     {
-        var accounting = AccountingData.CreateNew(period_start, period_end, emails_included, email_sent);
+        AccountingData accounting = AccountingData.CreateNew(period_start, period_end, emails_included, email_sent);
 
         return new SystemInfoData(status, userId, email, projectId, projectName, accounting);
     }

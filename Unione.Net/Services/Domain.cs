@@ -23,39 +23,31 @@ public class Domain
     public async Task<DomainData> GetDNSRecords(string domain)
     {
         _error = null;
-        if (_apiConnection.IsLoggingEnabled())
-            _logger.Information("Domain:GetDNSRecords:domain[" + domain + "]");
+       
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("domain/get-dns-records.json", DomainData.CreateNew(domain));
 
-        var apiResponse = await _apiConnection.SendMessageAsync("domain/get-dns-records.json", DomainData.CreateNew(domain));
-
-        if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
+        if (!apiResponse.Item1.ToLower().Contains("error") &&
+            !apiResponse.Item2.ToLower().Contains("error") &&
+            !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<DomainData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<DomainData> result = OperationResult<DomainData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
-            if (_apiConnection.IsLoggingEnabled())
-                _logger.Information("Domain:GetDNSRecords:result:" + result.GetStatus());
+            DomainData? mappedResult = _mapper.Map<DomainData>(result);
 
-            var mappedResult = _mapper.Map<DomainData>(result);
-
-            if (_apiConnection.IsLoggingEnabled())
-                _logger.Information("Domain:GetDNSRecords:END");
             return mappedResult;
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
-            if (_apiConnection.IsLoggingEnabled())
-                _logger.Information("Domain:GetDNSRecords:result:" + result.GetStatus());
-
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
                 _error.Details = ErrorDetailsData.CreateNew("TIMEOUT", apiResponse.Item1, 0);
-
-            if (_apiConnection.IsLoggingEnabled())
-                _logger.Information("Domain:GetDNSRecords:END");
 
             return null!;
         }
@@ -67,15 +59,15 @@ public class Domain
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Domain:ValidateVerificationRecord:domain[" + domain + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("domain/validate-verification-record.json", DomainData.CreateNew(domain));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("domain/validate-verification-record.json", DomainData.CreateNew(domain));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<DomainData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<DomainData> result = OperationResult<DomainData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:ValidateVerificationRecord:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<DomainData>(result);
+            DomainData? mappedResult = _mapper.Map<DomainData>(result);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:ValidateVerificationRecord:END");
@@ -83,12 +75,14 @@ public class Domain
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:ValidateVerificationRecord:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -107,15 +101,15 @@ public class Domain
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Domain:ValidateDkim:domain[" + domain + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("domain/validate-dkim.json", DomainData.CreateNew(domain));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("domain/validate-dkim.json", DomainData.CreateNew(domain));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<DomainData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<DomainData> result = OperationResult<DomainData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:ValidateDkim:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<DomainData>(result);
+            DomainData? mappedResult = _mapper.Map<DomainData>(result);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:ValidateDkim:END");
@@ -123,12 +117,14 @@ public class Domain
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:ValidateDkim:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -147,15 +143,15 @@ public class Domain
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Domain:List:domain[" + domain + "]:limit[" + limit + "]:offset[" + offset + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("domain/list.json", DomainData.CreateNew(domain, limit, offset));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("domain/list.json", DomainData.CreateNew(domain, limit, offset));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<DomainList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<DomainList> result = OperationResult<DomainList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:List:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<DomainList>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<DomainList>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:List:END");
@@ -163,12 +159,14 @@ public class Domain
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Domain:List:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

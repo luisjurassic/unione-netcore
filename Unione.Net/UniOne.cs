@@ -9,11 +9,6 @@ namespace Unione.Net;
 
 public class UniOne : IUniOne
 {
-    private ILogger _logger;
-    private IMapper _mapper;
-    private IApiConfiguration _apiConfiguration;
-    private IApiConnection _apiConnection;
-
     private readonly Domain _domain;
     private readonly Email _email;
     private readonly EmailValidation _emailValidation;
@@ -40,36 +35,34 @@ public class UniOne : IUniOne
     public Webhook Webhook => _webhook;
     public Generic Generic => _generic;
 
-
     public UniOne(Configuration configuration)
     {
-        _logger = new LoggerConfiguration()
+        ILogger logger = new LoggerConfiguration()
             .WriteTo.Console()
-            .WriteTo.File("UniOne-.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.File("unione.net.txt", rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
-        var mapperConfiguration = new MapperConfiguration(cfg => { });
+        MapperConfiguration mapperConfiguration = new MapperConfiguration(cfg => { });
 
-        _mapper = mapperConfiguration.CreateMapper();
+        IMapper? mapper = mapperConfiguration.CreateMapper();
 
-        _apiConfiguration =
-            ApiConfiguration.CreateNew(configuration.ServerAddress, configuration.ApiUrl, configuration.ApiVersion,
-                configuration.ApiKey, configuration.EnableLogging, configuration.ServerTimeout);
+        IApiConfiguration apiConfiguration = ApiConfiguration.CreateNew(configuration.ServerAddress, configuration.ApiUrl, configuration.ApiVersion,
+            configuration.ApiKey, configuration.EnableLogging, configuration.ServerTimeout);
 
-        _apiConnection = new ApiConnection(_apiConfiguration);
+        IApiConnection apiConnection = new ApiConnection(apiConfiguration);
 
 
-        _domain = new Domain(_apiConnection, _mapper, _logger);
-        _email = new Email(_apiConnection, _mapper, _logger);
-        _emailValidation = new EmailValidation(_apiConnection, _mapper, _logger);
-        _eventDump = new EventDump(_apiConnection, _mapper, _logger);
-        _obsolete = new Obsolete(_apiConnection, _mapper, _logger);
-        _project = new Project(_apiConnection, _mapper, _logger);
-        _suppression = new Suppression(_apiConnection, _mapper, _logger);
-        _system = new Services.System(_apiConnection, _mapper, _logger);
-        _tag = new Tag(_apiConnection, _mapper, _logger);
-        _template = new Template(_apiConnection, _mapper, _logger);
-        _webhook = new Webhook(_apiConnection, _mapper, _logger);
-        _generic = new Generic(_apiConnection, _mapper, _logger);
+        _domain = new Domain(apiConnection, mapper, logger);
+        _email = new Email(apiConnection, mapper, logger);
+        _emailValidation = new EmailValidation(apiConnection, mapper, logger);
+        _eventDump = new EventDump(apiConnection, mapper, logger);
+        _obsolete = new Obsolete(apiConnection, mapper, logger);
+        _project = new Project(apiConnection, mapper, logger);
+        _suppression = new Suppression(apiConnection, mapper, logger);
+        _system = new Services.System(apiConnection, mapper, logger);
+        _tag = new Tag(apiConnection, mapper, logger);
+        _template = new Template(apiConnection, mapper, logger);
+        _webhook = new Webhook(apiConnection, mapper, logger);
+        _generic = new Generic(apiConnection, mapper, logger);
     }
 }

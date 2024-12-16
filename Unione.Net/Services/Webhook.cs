@@ -26,10 +26,10 @@ public class Webhook
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Webhook:Set");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("webhook/set.json", webhookData);
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("webhook/set.json", webhookData);
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<WebhookData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<WebhookData> result = OperationResult<WebhookData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:Set:result:" + result.GetStatus());
 
@@ -40,13 +40,15 @@ public class Webhook
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:Set:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -65,14 +67,14 @@ public class Webhook
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Webhook:Get:url[" + url + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("webhook/get.json", "{ \"url\" : \"" + url + "\"  }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("webhook/get.json", "{ \"url\" : \"" + url + "\"  }");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<WebhookData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<WebhookData> result = OperationResult<WebhookData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:Get:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<WebhookData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<WebhookData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:Get:END");
@@ -81,13 +83,15 @@ public class Webhook
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:Get:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -106,14 +110,14 @@ public class Webhook
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Webhook:List:limit[" + limit + "]:offset[" + offset + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("webhook/list.json", InputData.CreateNew(null, limit, offset));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("webhook/list.json", InputData.CreateNew(null, limit, offset));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<WebhookData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<WebhookData> result = OperationResult<WebhookData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:List:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<WebhookData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<WebhookData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:List:END");
@@ -122,13 +126,15 @@ public class Webhook
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:List:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -147,14 +153,14 @@ public class Webhook
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Webhook:Delete:Detele[" + url + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("webhook/delete.json", "{ \"url:\" \"" + url + "\"  }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("webhook/delete.json", "{ \"url:\" \"" + url + "\"  }");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<string> result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:Delete:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<string>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<string>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:Delete:END");
@@ -163,13 +169,15 @@ public class Webhook
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Webhook:Delete:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

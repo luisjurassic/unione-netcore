@@ -26,14 +26,14 @@ public class Obsolete
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Obsolete:UnsubscribedSet:emailAddress[" + emailAddress + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("unsubscribed/set.json", EmailAddressData.CreateNew(emailAddress));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("unsubscribed/set.json", EmailAddressData.CreateNew(emailAddress));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<UnsubscribedData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<UnsubscribedData> result = OperationResult<UnsubscribedData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedSet:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<UnsubscribedData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<UnsubscribedData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedSet:END");
@@ -42,14 +42,16 @@ public class Obsolete
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedSet:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
-            _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1,
+                Details = _mapper.Map<ErrorDetailsData>(result.GetResponse())
+            };
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedSet:END");
@@ -64,14 +66,14 @@ public class Obsolete
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Obsolete:UnsubscribedCheck:emailAddress[" + emailAddress + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("unsubscribed/check.json", EmailAddressData.CreateNew(emailAddress));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("unsubscribed/check.json", EmailAddressData.CreateNew(emailAddress));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<UnsubscribedData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<UnsubscribedData> result = OperationResult<UnsubscribedData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedCheck:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<UnsubscribedData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<UnsubscribedData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedCheck:END");
@@ -80,13 +82,15 @@ public class Obsolete
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedCheck:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -105,14 +109,14 @@ public class Obsolete
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Obsolete:UnsubscribedList:emailAddress[" + emailAddress + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("unsubscribed/list.json", EmailAddressData.CreateNew(emailAddress));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("unsubscribed/list.json", EmailAddressData.CreateNew(emailAddress));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<UnsubscribedList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<UnsubscribedList> result = OperationResult<UnsubscribedList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedList:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<UnsubscribedList>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<UnsubscribedList>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedList:END");
@@ -121,13 +125,15 @@ public class Obsolete
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Obsolete:UnsubscribedList:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

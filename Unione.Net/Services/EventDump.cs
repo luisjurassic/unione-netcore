@@ -26,14 +26,14 @@ public class EventDump
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("EventDump:Create");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("event-dump/create.json", request);
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("event-dump/create.json", request);
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<string> result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Create:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<string>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<string>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Create:END");
@@ -42,13 +42,15 @@ public class EventDump
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Create:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -67,14 +69,14 @@ public class EventDump
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("EventDump:Get:dumpId[" + dumpId + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("event-dump/get.json", "{ \"dump_id:\" \"" + dumpId + " \"  }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("event-dump/get.json", "{ \"dump_id:\" \"" + dumpId + " \"  }");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<EventDumpRequest>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<EventDumpRequest> result = OperationResult<EventDumpRequest>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Get:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<EventDumpRequest>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<EventDumpRequest>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Get:END");
@@ -83,13 +85,15 @@ public class EventDump
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Get:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -108,14 +112,14 @@ public class EventDump
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("EventDump:List:limit[" + limit + "]:offset[" + offset + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("event-dump/list.json", InputData.CreateNew(null, limit, offset));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("event-dump/list.json", InputData.CreateNew(null, limit, offset));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<EventDumpList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<EventDumpList> result = OperationResult<EventDumpList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:List:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<EventDumpList>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<EventDumpList>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:List:END");
@@ -124,13 +128,15 @@ public class EventDump
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:List:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -149,14 +155,14 @@ public class EventDump
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("EventDump:Detele[" + dumpId + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("event-dump/delete.json", "{ \"dump_id:\" \"" + dumpId + " \"  }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("event-dump/delete.json", "{ \"dump_id:\" \"" + dumpId + " \"  }");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<string> result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Detele:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<string>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<string>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Detele:END");
@@ -165,13 +171,15 @@ public class EventDump
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EventDump:Detele:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

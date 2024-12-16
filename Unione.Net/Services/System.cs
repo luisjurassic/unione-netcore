@@ -26,15 +26,15 @@ public class System
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("System:SystemInfo");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("system/info.json", "{ }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("system/info.json", "{ }");
 
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<SystemInfoData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<SystemInfoData> result = OperationResult<SystemInfoData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("System:SystemInfo:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<SystemInfoData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<SystemInfoData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("System:SystemInfo:END");
@@ -43,13 +43,15 @@ public class System
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("System:SystemInfo:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

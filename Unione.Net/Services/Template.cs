@@ -26,14 +26,14 @@ public class Template
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Template:Set");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("template/set.json", templateData.ToJson());
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("template/set.json", templateData.ToJson());
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<string> result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Set:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<string>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<string>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Set:END");
@@ -42,13 +42,15 @@ public class Template
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Set:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -67,14 +69,14 @@ public class Template
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Template:Get:id[" + id + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("template/get.json", InputData.CreateNew(id, null, null));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("template/get.json", InputData.CreateNew(id, null, null));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<TemplateData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<TemplateData> result = OperationResult<TemplateData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Get:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<TemplateData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<TemplateData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Get:END");
@@ -83,13 +85,15 @@ public class Template
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Get:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -108,14 +112,14 @@ public class Template
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Template:List:limit[" + limit + "]:offset[" + offset + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("template/list.json", InputData.CreateNew(null, limit, offset));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("template/list.json", InputData.CreateNew(null, limit, offset));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<TemplateList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<TemplateList> result = OperationResult<TemplateList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:List:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<TemplateList>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<TemplateList>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:List:END");
@@ -124,13 +128,15 @@ public class Template
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:List:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -149,14 +155,14 @@ public class Template
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Template:Detele:id[" + id + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("template/delete.json", InputData.CreateNew(id, null, null));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("template/delete.json", InputData.CreateNew(id, null, null));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<string> result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Detele:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<string>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<string>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Detele:END");
@@ -165,13 +171,15 @@ public class Template
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Template:Detele:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

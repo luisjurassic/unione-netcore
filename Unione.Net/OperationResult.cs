@@ -35,7 +35,7 @@ public class OperationResult<T> : IOperationResult<T> where T : class
 
     public static OperationResult<T> CreateNew(string status, string responseBody)
     {
-        var data = JsonConvert.DeserializeObject<T>(responseBody);
+        T? data = JsonConvert.DeserializeObject<T>(responseBody);
 
         return new OperationResult<T>(status, data);
     }

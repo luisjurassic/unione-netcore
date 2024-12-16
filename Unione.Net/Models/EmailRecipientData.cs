@@ -51,9 +51,9 @@ public class EmailRecipientData
 
     public static EmailRecipientData CreateRecipient(string name, string emailAddress, Dictionary<object, object>? substitutions)
     {
-        var regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+        Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
 
-        var match = regex.Match(emailAddress);
+        Match match = regex.Match(emailAddress);
 
         if (match.Success)
             return new EmailRecipientData(name, emailAddress, substitutions);

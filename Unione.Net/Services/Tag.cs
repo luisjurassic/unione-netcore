@@ -26,14 +26,14 @@ public class Tag
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Tag:List");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("tag/list.json", "{ }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("tag/list.json", "{ }");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<TagList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<TagList> result = OperationResult<TagList>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Tag:List:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<TagList>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<TagList>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Tag:List:END");
@@ -42,13 +42,15 @@ public class Tag
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Tag:List:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -67,14 +69,14 @@ public class Tag
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Tag:Delete:tagId[" + tagId + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("tag/delete.json", TagData.CreateNew(tagId, ""));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("tag/delete.json", TagData.CreateNew(tagId, ""));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<string> result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Tag:Delete:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<string>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<string>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Tag:Delete:END");
@@ -83,13 +85,15 @@ public class Tag
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Tag:Delete:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

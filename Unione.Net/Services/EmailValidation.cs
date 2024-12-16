@@ -26,14 +26,14 @@ public class EmailValidation
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("EmailValidation:ValidationSingle:emailAddress[" + emailAddress + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("email-validation/single.json", EmailAddressData.CreateNew(emailAddress));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("email-validation/single.json", EmailAddressData.CreateNew(emailAddress));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<EmailValidationData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<EmailValidationData> result = OperationResult<EmailValidationData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EmailValidation:ValidationSingle:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<EmailValidationData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<EmailValidationData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EmailValidation:ValidationSingle:END");
@@ -42,13 +42,15 @@ public class EmailValidation
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("EmailValidation:ValidationSingle:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

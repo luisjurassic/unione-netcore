@@ -27,14 +27,14 @@ public class Suppression
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Suppression:Set:email[" + email + "]:cause[" + cause + "]:created[" + created.ToUniversalTime() + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("suppression/set.json", SuppressionInputData.CreateNew(email, cause, created));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("suppression/set.json", SuppressionInputData.CreateNew(email, cause, created));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<SuppressionData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<SuppressionData> result = OperationResult<SuppressionData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Set:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<SuppressionData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<SuppressionData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Set:END");
@@ -43,13 +43,15 @@ public class Suppression
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Set:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -68,14 +70,14 @@ public class Suppression
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Suppression:Get:email[" + email + "]:all_projects[" + all_projects + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("suppression/get.json", SuppressionInputData.CreateNew(email, null, DateTime.MinValue, all_projects));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("suppression/get.json", SuppressionInputData.CreateNew(email, null, DateTime.MinValue, all_projects));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<SuppressionData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<SuppressionData> result = OperationResult<SuppressionData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Get:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<SuppressionData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<SuppressionData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Get:END");
@@ -84,13 +86,15 @@ public class Suppression
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Get:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -109,14 +113,14 @@ public class Suppression
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Suppression:List");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("suppression/list.json", new SuppressionListFilters(cause, source, start_time, cursor, limit));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("suppression/list.json", new SuppressionListFilters(cause, source, start_time, cursor, limit));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<SuppressionData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<SuppressionData> result = OperationResult<SuppressionData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:List:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<SuppressionData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<SuppressionData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:List:END");
@@ -125,13 +129,15 @@ public class Suppression
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:List:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else
@@ -150,14 +156,14 @@ public class Suppression
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Suppression:Delete:email[" + email + "]");
 
-        var apiResponse = await _apiConnection.SendMessageAsync("suppression/delete.json", SuppressionInputData.CreateNew(email));
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("suppression/delete.json", SuppressionInputData.CreateNew(email));
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
-            var result = OperationResult<SuppressionData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<SuppressionData> result = OperationResult<SuppressionData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Delete:result:" + result.GetStatus());
 
-            var mappedResult = _mapper.Map<SuppressionData>(result.GetResponse());
+            dynamic? mappedResult = _mapper.Map<SuppressionData>(result.GetResponse());
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Delete:END");
@@ -166,13 +172,15 @@ public class Suppression
         }
         else
         {
-            var result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
+            OperationResult<ErrorDetailsData> result = OperationResult<ErrorDetailsData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
 
             if (_apiConnection.IsLoggingEnabled())
                 _logger.Information("Suppression:Delete:result:" + result.GetStatus());
 
-            _error = new ErrorData();
-            _error.Status = apiResponse.Item1;
+            _error = new ErrorData
+            {
+                Status = apiResponse.Item1
+            };
             if (!_error.Status.Contains("timeout"))
                 _error.Details = _mapper.Map<ErrorDetailsData>(result.GetResponse());
             else

@@ -175,17 +175,17 @@ public class EmailMessageData
 
     public string ToJson()
     {
-        var jsonObject = new Dictionary<string, object>
+        Dictionary<string, object> jsonObject = new Dictionary<string, object>
         {
             ["message"] = new Dictionary<string, object>()
         };
 
         PropertyInfo[] properties = typeof(EmailMessageData).GetProperties();
-        foreach (var property in properties)
+        foreach (PropertyInfo property in properties)
         {
-            var propertyName = GetJsonPropertyName(property);
+            string propertyName = GetJsonPropertyName(property);
 
-            var propertyValue = property.GetValue(this);
+            object? propertyValue = property.GetValue(this);
 
             if (propertyValue != null) ((Dictionary<string, object>)jsonObject["message"])[propertyName] = propertyValue;
         }
@@ -198,7 +198,7 @@ public class EmailMessageData
 
     private static string GetJsonPropertyName(PropertyInfo property)
     {
-        var attribute = property.GetCustomAttribute<JsonPropertyAttribute>();
+        JsonPropertyAttribute? attribute = property.GetCustomAttribute<JsonPropertyAttribute>();
         return attribute?.PropertyName ?? property.Name;
     }
 }
