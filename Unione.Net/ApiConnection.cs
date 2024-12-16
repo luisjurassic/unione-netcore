@@ -13,7 +13,6 @@ public class ApiConnection(IApiConfiguration apiConfiguration) : IApiConnection
 {
     private readonly bool _enableLogging = apiConfiguration.IsLoggingEnabled();
 
-
     public async Task<(string, string)> SendMessageAsync(string command, object request)
     {
         string? apiResponse = string.Empty;
@@ -49,6 +48,10 @@ public class ApiConnection(IApiConfiguration apiConfiguration) : IApiConnection
                 catch (TaskCanceledException)
                 {
                     apiResponse = "Request cancelled due to timeout.";
+                }
+                catch (Exception ex)
+                {
+                    apiResponse = ex.Message;
                 }
             }
 

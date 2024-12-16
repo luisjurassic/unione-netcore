@@ -69,7 +69,7 @@ public class EventDump
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("EventDump:Get:dumpId[" + dumpId + "]");
 
-        (string, string) apiResponse = await _apiConnection.SendMessageAsync("event-dump/get.json", "{ \"dump_id:\" \"" + dumpId + " \"  }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("event-dump/get.json", $"{{ \"dump_id:\" \"{dumpId} \"  }}");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
             OperationResult<EventDumpRequest> result = OperationResult<EventDumpRequest>.CreateNew(apiResponse.Item1, apiResponse.Item2);
@@ -155,7 +155,7 @@ public class EventDump
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("EventDump:Detele[" + dumpId + "]");
 
-        (string, string) apiResponse = await _apiConnection.SendMessageAsync("event-dump/delete.json", "{ \"dump_id:\" \"" + dumpId + " \"  }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("event-dump/delete.json", $"{{ \"dump_id:\" \"{dumpId} \"  }}");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
             OperationResult<string> result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);

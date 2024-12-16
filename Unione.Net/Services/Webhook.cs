@@ -67,7 +67,7 @@ public class Webhook
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Webhook:Get:url[" + url + "]");
 
-        (string, string) apiResponse = await _apiConnection.SendMessageAsync("webhook/get.json", "{ \"url\" : \"" + url + "\"  }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("webhook/get.json", $"{{ \"url\" : \"{url}\"  }}");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
             OperationResult<WebhookData> result = OperationResult<WebhookData>.CreateNew(apiResponse.Item1, apiResponse.Item2);
@@ -153,7 +153,7 @@ public class Webhook
         if (_apiConnection.IsLoggingEnabled())
             _logger.Information("Webhook:Delete:Detele[" + url + "]");
 
-        (string, string) apiResponse = await _apiConnection.SendMessageAsync("webhook/delete.json", "{ \"url:\" \"" + url + "\"  }");
+        (string, string) apiResponse = await _apiConnection.SendMessageAsync("webhook/delete.json", $"{{ \"url:\" \"{url}\"  }}");
         if (!apiResponse.Item1.ToLower().Contains("error") && !apiResponse.Item2.ToLower().Contains("error") && !apiResponse.Item1.ToLower().Contains("cancelled"))
         {
             OperationResult<string> result = OperationResult<string>.CreateNew(apiResponse.Item1, apiResponse.Item2);

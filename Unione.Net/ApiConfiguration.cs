@@ -1,4 +1,5 @@
-﻿using Unione.Net.Exceptions;
+﻿using System;
+using Unione.Net.Exceptions;
 using Unione.Net.Interfaces;
 
 namespace Unione.Net;
@@ -37,21 +38,24 @@ public class ApiConfiguration : IApiConfiguration
             throw new EmptyApiConfigurationException("Server address cannot be empty!");
         if (string.IsNullOrEmpty(apiUrl))
             throw new EmptyApiConfigurationException("ApiUrl cannot be empty!");
-        if (!apiUrl.Contains(@"/"))
+        if (!apiUrl.Contains("/"))
             throw new EmptyApiConfigurationException("ApiUrl is invalid!");
-        if (string.IsNullOrEmpty(apiVersion) && !apiUrl.Contains(@"/"))
+        if (string.IsNullOrEmpty(apiVersion) && !apiUrl.Contains("/"))
             throw new EmptyApiConfigurationException("ApiVersion is invalid!");
         if (string.IsNullOrEmpty(apiKey))
             throw new EmptyApiConfigurationException("ApiKey cannot be empty!");
 
-        if (!serverAddress.EndsWith(@"/"))
-            serverAddress = serverAddress + @"/";
+        if (!serverAddress.StartsWith("https://"))
+            serverAddress = $"https://{serverAddress}";
 
-        if (!apiUrl.EndsWith(@"/"))
-            apiUrl = apiUrl + @"/";
+        if (!serverAddress.EndsWith("/"))
+            serverAddress = $"{serverAddress}/";
 
-        if (!apiVersion.EndsWith(@"/"))
-            apiVersion = apiVersion + @"/";
+        if (!apiUrl.EndsWith("/"))
+            apiUrl = $"{apiUrl}/";
+
+        if (!apiVersion.EndsWith("/"))
+            apiVersion = $"{apiVersion}/";
 
         return new ApiConfiguration(serverAddress, apiUrl, apiVersion, apiKey, enableLogging, timeout);
     }
@@ -73,6 +77,6 @@ public class ApiConfiguration : IApiConfiguration
 
     public int GetTimeout()
     {
-        return _timeout;
+        return (int)TimeSpan.FromSeconds(_timeout).TotalMilliseconds;
     }
 }

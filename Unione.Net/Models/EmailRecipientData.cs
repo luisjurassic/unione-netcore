@@ -58,6 +58,6 @@ public class EmailRecipientData
         if (match.Success)
             return new EmailRecipientData(name, emailAddress, substitutions);
         else
-            throw new IncorrectEmailAdressException(emailAddress + " is not valid email address!");
+            throw new IncorrectEmailAdressException($"{emailAddress} is not valid email address!");
     }
 }
