@@ -4,6 +4,24 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>latestmajor</LangVersion>
         <Nullable>enable</Nullable>
+        <Authors>Luis Jr. Jorge</Authors>
+        <PackageId>Unione.Net</PackageId>
+        <Company>WiseIn Tech</Company>
+        <Product>Unione.Net</Product>
+        <Description>Biblioteca de acesso à api do serviço Unione baseada em .Net Standard 2.0.</Description>
+        <Version>1.0.0</Version>
+        <LangVersion>latest</LangVersion>
+        <Copyright>Luis Jr. Jorge</Copyright>
+        <PackageProjectUrl>https://github.com/luisjurassic/unione.net</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/luisjurassic/unione.net</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>unione, unione email, unione api, unione sdk</PackageTags>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
+        <Title>Unione .Net</Title>
+        <PackageLicenseUrl>https://github.com/luisjurassic/unione.net/blob/master/LICENSE</PackageLicenseUrl>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>unione.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
 
     <ItemGroup>
