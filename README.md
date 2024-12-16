@@ -1,54 +1,50 @@
-# unione-csharp
-UniOne Email API C# library for sending emails with unione.io email service.
+# Unione Net
+Baseado em .Net Standard 2.0 essa biblioteca é um fork com base no projeto [unione-csharp](https://github.com/unione-repo/unione-csharp).
 
-## Installation
-Add UniOne library to your project references.
-.Net 7 is required.
-
-## Usage
-###Configuration
-First step is adding necessary configuration to your appsettings.json file.
+## Instalação
+Adicione a biblioteca às referências do seu projeto. Apos isso crie uma instância do tipo **Configuration**, passando os dados básicos para comunicação com Unione.
 
 ```
-{
- "UniOne": 
-  {
-    "ServerAddress": "https://eu1.unione.io/",
-    "ApiUrl": "en/transactional/api/",
-    "ApiVersion": "v1",
-    "X-API-KEY": "",
-    "ServerTimeout": 5,
-    "EnableLogging": true
-  }
-}
-```
-
-Where:
-
-**ServerAddress** - __eu1.unione.io__ for EU or __us1.unione.io__ for USA & Canada
-**X-API-KEY** - Api key generated in Account -> Security tab on your UniOne account
-**ServerTimeout** - Default 5 seconds timeout
-**EnableLogging** - Set to true if you want to generate logs for library
-
-### Creating UniOne instance
+Configuration configuration = new Configuration()
+        {            
+            ServerAddress = "us1.unione.io"
+            ApiKey = "...",
+            ServerTimeout = 5,
+            EnableLogging = true
+        };
 
 ```
-var uniOne = new UniOne.UniOne(configuration);
-```
-UniOne constructor needs IConfiguration interface with loaded appsettings.json
+- **ServerAddress**: Você deve enviar uma solicitação de API para o servidor em que sua conta está registrada. __eu1.unione.io__(servidor europeu UniOne) ou __us1.unione.io__(servidor UniOne dos EUA e Canadá).
+- **ApiKey**: Chave de API gerada na sua conta UniOne
+- **ServerTimeout**: Tempo limite padrão de 30 segundos
+- **EnableLogging**: Defina como **true** se quiser gerar logs
+
+Crie uma instância UniOne para usar os métodos implementados
 
 ```
-IConfiguration configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .Build();
+        UniOne uni = new UniOne(configuration);
+        
+        //Envia um email
+        EmailResponseData result = await uni.Email.Send(new EmailMessageData
+        {
+            //preencha as propriedade conforme a sua necessidade...
+            FromEmail = "teste@teste.com",
+            FromName = "Luis",
+            Body = new Body
+            {
+                Html = "<p>Email de teste</p>"
+            }
+        });
+        
+        //Listar os webhooks cadastrados
+        WebhookData webhook = await uni.Webhook.List();
+
 ```
 
-### UniOne main classes
-Library implements those classes with their respective methods. For more detail refer to [UniOne](https://docs.unione.io/en/web-api) api documentations.
+### Implementações
+A biblioteca implementa essas classes com seus respectivos métodos. Para mais detalhes, consulte a documentação da API [UniOne](https://docs.unione.io/en/web-api).
 
 **Email**
-Method related to sending emails.
 - async Task<EmailResponseData> Send(EmailMessageData message)
 - async Task<IOperationResult<string>> Subscribe(string fromEmail, string fromName, string toEmail)
 
@@ -104,16 +100,7 @@ Method related to sending emails.
 - async Task<UnsubscribedList> UnsubscribedList(string emailAddress)
 
 **Generic**
-- async Task<T> CustomRequest<T>(string request, object obj, Func<string, string, OperationResult<T>> operationResultCreator) where T : class - method allowing to send custom request to UniOne API 
+- async Task<T> CustomRequest<T>(string request, object obj, Func<string, string, OperationResult<T>> operationResultCreator) where T : class
 
-Before you send custom request, you have to provide expected class for method result.
-```
-var customRequest = await uniOne.Generic.CustomRequest<TemplateList>("template/list.json", "{\"limit\": 50,\"offset\":0}", (status, response) => OperationResult<TemplateList>.CreateNew(status, response));
-
-if (customRequest == null)
-{
-    var error = uniOne.Generic.GetError();
-}
-
-```
-
+### Licença
+A biblioteca está disponível como código aberto sob os termos da [Licença MIT](LICENSE).
